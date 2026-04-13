@@ -172,7 +172,7 @@ app.post('/lessons/:lessonId/notes', (req, res) => {
 });
 
 // Serve React app for all other routes
-app.get('/{*path}', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
