@@ -6,6 +6,7 @@
     "start": "webpack serve --open",
     "build": "webpack --mode production",
     "server": "node server/index.js",
+    "dev": "npm run build && npm run server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

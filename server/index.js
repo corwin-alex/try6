@@ -4,10 +4,12 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const DB_PATH = process.env.DB_PATH || './course_tracker.db';
 
-// Подключение к SQLite (имитация PostgreSQL)
-const db = new Database('./course_tracker.db');
+// Подключение к SQLite
+const db = new Database(DB_PATH);
 
 app.use(cors());
 app.use(express.json());
