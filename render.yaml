@@ -2,12 +2,16 @@ services:
   - type: web
     name: course-tracker
     env: node
-    buildCommand: npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm run server
+    disk:
+      type: pvc
+      name: sqlite-data
+      mountPath: /opt/render/project/src/server
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: DB_PATH
-        value: /opt/render/project/src/course_tracker.db
+        value: /opt/render/project/src/server/course_tracker.db

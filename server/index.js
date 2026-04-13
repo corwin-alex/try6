@@ -6,14 +6,24 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const DB_PATH = process.env.DB_PATH || './course_tracker.db';
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../course_tracker.db');
 
 // Подключение к SQLite
-const db = new Database(DB_PATH);
+let db;
+try {
+  db = new Database(DB_PATH);
+} catch (err) {
+  console.error('Ошибка подключения к базе данных:', err.message);
+  process.exit(1);
+}
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../dist')));
+
+// Раздача статических файлов из dist
+const distPath = path.join(__dirname, '../dist');
+console.log('Раздача статики из:', distPath);
+app.use(express.static(distPath));
 
 // Создание таблиц
 const createTables = () => {
@@ -171,9 +181,11 @@ app.post('/lessons/:lessonId/notes', (req, res) => {
   }
 });
 
-// Serve React app for all other routes
-app.get('/*path', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+// Serve React app for all other routes (SPA fallback)
+app.get('/{*path}', (req, res) => {
+  const indexPath = path.join(__dirname, '../dist/index.html');
+  console.log('Запрос на маршрут:', req.path, '→ отдаю index.html');
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, () => {
