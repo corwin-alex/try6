@@ -63,7 +63,7 @@ const createTables = () => {
 };
 
 // API для курсов
-app.get('/api/courses', (req, res) => {
+app.get('/courses', (req, res) => {
   try {
     const result = db.prepare('SELECT * FROM courses ORDER BY created_at DESC').all();
     res.json(result);
@@ -72,7 +72,7 @@ app.get('/api/courses', (req, res) => {
   }
 });
 
-app.post('/api/courses', (req, res) => {
+app.post('/courses', (req, res) => {
   try {
     const { title, description } = req.body;
     const stmt = db.prepare('INSERT INTO courses (title, description) VALUES (?, ?)');
@@ -84,7 +84,7 @@ app.post('/api/courses', (req, res) => {
   }
 });
 
-app.delete('/api/courses/:id', (req, res) => {
+app.delete('/courses/:id', (req, res) => {
   try {
     db.prepare('DELETE FROM courses WHERE id = ?').run(req.params.id);
     res.json({ message: 'Курс удалён' });
@@ -94,7 +94,7 @@ app.delete('/api/courses/:id', (req, res) => {
 });
 
 // API для модулей
-app.get('/api/courses/:courseId/modules', (req, res) => {
+app.get('/courses/:courseId/modules', (req, res) => {
   try {
     const result = db.prepare('SELECT * FROM modules WHERE course_id = ? ORDER BY order_index').all(req.params.courseId);
     res.json(result);
@@ -103,7 +103,7 @@ app.get('/api/courses/:courseId/modules', (req, res) => {
   }
 });
 
-app.post('/api/courses/:courseId/modules', (req, res) => {
+app.post('/courses/:courseId/modules', (req, res) => {
   try {
     const { title, order_index } = req.body;
     const stmt = db.prepare('INSERT INTO modules (course_id, title, order_index) VALUES (?, ?, ?)');
@@ -116,7 +116,7 @@ app.post('/api/courses/:courseId/modules', (req, res) => {
 });
 
 // API для уроков
-app.get('/api/modules/:moduleId/lessons', (req, res) => {
+app.get('/modules/:moduleId/lessons', (req, res) => {
   try {
     const result = db.prepare('SELECT * FROM lessons WHERE module_id = ? ORDER BY order_index').all(req.params.moduleId);
     res.json(result);
@@ -125,7 +125,7 @@ app.get('/api/modules/:moduleId/lessons', (req, res) => {
   }
 });
 
-app.post('/api/modules/:moduleId/lessons', (req, res) => {
+app.post('/modules/:moduleId/lessons', (req, res) => {
   try {
     const { title, content, order_index } = req.body;
     const stmt = db.prepare('INSERT INTO lessons (module_id, title, content, order_index) VALUES (?, ?, ?, ?)');
@@ -137,7 +137,7 @@ app.post('/api/modules/:moduleId/lessons', (req, res) => {
   }
 });
 
-app.put('/api/lessons/:id/toggle', (req, res) => {
+app.put('/lessons/:id/toggle', (req, res) => {
   try {
     const lesson = db.prepare('SELECT * FROM lessons WHERE id = ?').get(req.params.id);
     const newStatus = lesson.is_completed ? 0 : 1;
@@ -150,7 +150,7 @@ app.put('/api/lessons/:id/toggle', (req, res) => {
 });
 
 // API для заметок
-app.get('/api/lessons/:lessonId/notes', (req, res) => {
+app.get('/lessons/:lessonId/notes', (req, res) => {
   try {
     const result = db.prepare('SELECT * FROM notes WHERE lesson_id = ? ORDER BY created_at DESC').all(req.params.lessonId);
     res.json(result);
@@ -159,7 +159,7 @@ app.get('/api/lessons/:lessonId/notes', (req, res) => {
   }
 });
 
-app.post('/api/lessons/:lessonId/notes', (req, res) => {
+app.post('/lessons/:lessonId/notes', (req, res) => {
   try {
     const { content } = req.body;
     const stmt = db.prepare('INSERT INTO notes (lesson_id, content) VALUES (?, ?)');
